@@ -41,6 +41,7 @@ html
 		link(rel='prefetch' href=`/static-assets/badges/error.webp?${ timestamp }`)
 		link(rel='stylesheet' href=`/static-assets/instance.css?${ timestamp }`)
 		link(rel='modulepreload' href=`/assets/${clientEntry.file}`)
+		script(type='text/javascript', src=`/static-assets/web3.min.js?${ timestamp }`)
 
 		if Array.isArray(clientEntry.css)
 			each href in clientEntry.css

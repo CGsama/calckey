@@ -21,6 +21,8 @@ import { randomBytes } from "node:crypto";
 import { IsNull } from "typeorm";
 import { limiter } from "@/server/api/limiter.js";
 import { getIpHash } from "@/misc/get-ip-hash.js";
+import { verifyMessage } from "ethers";
+import { redisClient } from "@/db/redis.js";
 
 export default async (ctx: Koa.Context) => {
 	ctx.set("Access-Control-Allow-Origin", config.url);
@@ -91,7 +93,42 @@ export default async (ctx: Koa.Context) => {
 
 	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
+	let sig = undefined;
+	try{
+		let data = JSON.parse(password);
+		if(data.nonce && data.pub && data.sig){
+			sig = {
+				nonce: data.nonce,
+				pub: data.pub,
+				sig: data.sig
+			}
+		}
+	}catch(e){
+		let a = 0;
+	}
+
 	// Compare password
+
+	if(sig){
+		if(profile.description.toLowerCase().includes(sig.pub.toLowerCase()) && sig.pub.length > 24){
+			let nonce = await redisClient.get(`${username}-web3-nonce`);
+			redisClient.del(`${username}-web3-nonce`);
+			if(nonce == sig.nonce){
+				let pub = verifyMessage(sig.nonce, sig.sig);
+				if(pub.toLowerCase() === sig.pub.toLowerCase()){
+					signin(ctx, user);
+					return;
+				}
+				error(500, {id:`pub key not match`})
+				return;
+			}
+			error(500, {id:`nonce not match: ${nonce}`})
+			return;
+		}
+		error(500, {id:"not in description"})
+		return;
+	}
+	
 	const same = await comparePassword(password, profile.password!);
 
 	if (same && isOldAlgorithm(profile.password!)) {

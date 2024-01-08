@@ -18,6 +18,7 @@ import compatibility from "./compatibility.js";
 import handler from "./api-handler.js";
 import signup from "./private/signup.js";
 import signin from "./private/signin.js";
+import nonce from "./private/nonce.js";
 import signupPending from "./private/signup-pending.js";
 import verifyEmail from "./private/verify-email.js";
 import { koaBody } from "koa-body";
@@ -176,6 +177,7 @@ for (const endpoint of [...endpoints, ...compatibility]) {
 
 router.post("/signup", signup);
 router.post("/signin", signin);
+router.post("/nonce", nonce);
 router.post("/signup-pending", signupPending);
 router.post("/verify-email", verifyEmail);
 

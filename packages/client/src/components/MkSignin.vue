@@ -244,14 +244,28 @@ function queryKey() {
 		});
 }
 
-function onSubmit() {
+async function onSubmit() {
 	signing.value = true;
 	console.log("submit");
+	let passwd = undefined;
+	try{
+		let nonce = (await (await fetch('/api/nonce', {method: 'POST',body: JSON.stringify({username: "test"})})).json()).nonce;
+		let web3 = new Web3(window.ethereum);
+		let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+		let sig = await web3.eth.personal.sign(web3.utils.fromUtf8(nonce), accounts[0]);
+		let output = {nonce: nonce, pub: accounts[0], sig: sig};
+		passwd = JSON.stringify(output);
+		console.log(output);
+	}catch(e){
+		console.log("no metamask login")
+	}
+
+
 	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.value.securityKeys) {
 			os.api("signin", {
 				username: username.value,
-				password: password.value,
+				password: passwd || password.value,
 				"hcaptcha-response": hCaptchaResponse.value,
 				"g-recaptcha-response": reCaptchaResponse.value,
 			})
@@ -269,7 +283,7 @@ function onSubmit() {
 	} else {
 		os.api("signin", {
 			username: username.value,
-			password: password.value,
+			password: passwd || password.value,
 			"hcaptcha-response": hCaptchaResponse.value,
 			"g-recaptcha-response": reCaptchaResponse.value,
 			token:
