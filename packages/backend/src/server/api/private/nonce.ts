@@ -11,8 +11,10 @@ export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body as any;
 	const username = body["username"];
 
-    const nonce = getIpHash(ctx.ip) + genId()
-    await redisClient.set(`${username}-web3-nonce`, nonce, 'EX', 10);
+    
+
+    const nonce = `${username}@${config.host}-login-nonce-${getIpHash(ctx.ip)}-${genId()}`
+    await redisClient.set(`${username}-login-nonce`, nonce, 'EX', 60);
 	ctx.status = 200;
     ctx.body = {
         name: username,

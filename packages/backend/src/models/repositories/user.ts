@@ -522,6 +522,7 @@ export const UserRepository = db.getRepository(User).extend({
 							: null,
 						publicReactions: profile!.publicReactions,
 						ffVisibility: profile!.ffVisibility,
+						web3Publickey: profile!.web3Publickey,
 						twoFactorEnabled: profile!.twoFactorEnabled,
 						usePasswordLessLogin: profile!.usePasswordLessLogin,
 						securityKeys: profile!.twoFactorEnabled

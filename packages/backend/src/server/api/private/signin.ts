@@ -110,12 +110,12 @@ export default async (ctx: Koa.Context) => {
 	// Compare password
 
 	if(sig){
-		if(profile.description.toLowerCase().includes(sig.pub.toLowerCase()) && sig.pub.length > 24){
-			let nonce = await redisClient.get(`${username}-web3-nonce`);
-			redisClient.del(`${username}-web3-nonce`);
+		if(profile.web3Publickey.trim().toLowerCase() === sig.pub.trim().toLowerCase() && sig.pub.length > 24){
+			let nonce = await redisClient.get(`${username}-login-nonce`);
 			if(nonce == sig.nonce){
 				let pub = verifyMessage(sig.nonce, sig.sig);
 				if(pub.toLowerCase() === sig.pub.toLowerCase()){
+					redisClient.del(`${username}-login-nonce`);
 					signin(ctx, user);
 					return;
 				}
