@@ -225,7 +225,7 @@ function closeHint() {
 
 const pagination = {
 	endpoint,
-	limit: 10,
+	limit: 1,
 	params: query,
 };
 
