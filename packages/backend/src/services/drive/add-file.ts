@@ -407,6 +407,8 @@ async function expireOldFile(user: IRemoteUser, driveCapacity: number) {
 		q.andWhere("file.id != :bannerId", { bannerId: user.bannerId });
 	}
 
+	q.andWhere('file."localInteraction" = false');
+
 	//This selete is hard coded, be careful if change database schema
 	q.addSelect(
 		'SUM("file"."size") OVER (ORDER BY "file"."id" DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)',
