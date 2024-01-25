@@ -217,4 +217,9 @@ export class DriveFile {
 		nullable: true,
 	})
 	public requestIp: string | null;
+
+	@Column("boolean", {
+		default: false,
+	})
+	public localInteraction: boolean;
 }

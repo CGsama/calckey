@@ -262,6 +262,11 @@ export class Note {
 		comment: "The updated date of the Note.",
 	})
 	public updatedAt: Date;
+
+	@Column("boolean", {
+		default: false,
+	})
+	public localInteraction: boolean;
 	//#endregion
 
 	constructor(data: Partial<Note>) {

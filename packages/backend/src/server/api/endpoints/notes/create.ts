@@ -17,6 +17,7 @@ import { ApiError } from "@/server/api/error.js";
 import define from "@/server/api/define.js";
 import { HOUR } from "@/const.js";
 import { getNote } from "@/server/api/common/getters.js";
+import { setLocalInteraction } from "@/misc/set-local-interaction.js";
 
 export const meta = {
 	tags: ["notes"],
@@ -235,6 +236,7 @@ export default define(meta, paramDef, async (ps, user) => {
 				throw new ApiError(meta.errors.youHaveBeenBlocked);
 			}
 		}
+		setLocalInteraction(ps.renoteId);
 	}
 
 	let reply: Note | null = null;
@@ -262,6 +264,7 @@ export default define(meta, paramDef, async (ps, user) => {
 				throw new ApiError(meta.errors.youHaveBeenBlocked);
 			}
 		}
+		setLocalInteraction(ps.replyId);
 	}
 
 	if (ps.poll) {
