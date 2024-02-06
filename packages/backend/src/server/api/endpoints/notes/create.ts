@@ -311,6 +311,8 @@ export default define(meta, paramDef, async (ps, user) => {
 		apEmojis: ps.noExtractEmojis ? [] : undefined,
 	});
 
+	setLocalInteraction(note.id);
+
 	return {
 		createdNote: await Notes.pack(note, user),
 	};
